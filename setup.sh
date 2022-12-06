@@ -93,5 +93,3 @@ done
 
 #? return from repos/
 popd >/dev/null
-
-echo "all repos available!"
