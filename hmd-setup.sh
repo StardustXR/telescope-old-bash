@@ -126,12 +126,10 @@ case $selected in
             echo 'The server will run for 10 seconds to check that nothing crashes.'
             echo
             
-            adb shell dumpsys power | grep -q 'UID u0a11:   ACTIVE' || {
-                echo 'Please put on your headset!'
-                until adb shell dumpsys power | grep -q 'UID u0a11:   ACTIVE'; do sleep 0.1; done
-                echo --------------------------------
-                echo
-            }
+            echo 'Please put on your headset!'
+            echo
+            read -p '(press enter to continue) '
+            echo
 
             echo 'Killing old processes...'
             killall -wq wivrn-server ||:
