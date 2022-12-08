@@ -1,4 +1,5 @@
 [ -d repos/ ] || ./setup.sh
+[ -f .hmd-setup ] || ./hmd-setup.sh
 
 #? build the named repo
 function build() {
@@ -18,15 +19,15 @@ function run() {
 }
 
 #? set WAYLAND_DISPLAY to ensure Wayland clients launch in Stardust
-# function set_display() {
-    for i in {0..32}; do
-        lockfile="$XDG_RUNTIME_DIR/wayland-$i.lock"
-        ! [ -f "$lockfile" ] || flock -w 0.01 "$lockfile" true && {
-            export WAYLAND_DISPLAY="wayland-$i"
-            break
-        }
-    done
-# }
+for i in {0..32}; do
+    lockfile="$XDG_RUNTIME_DIR/wayland-$i.lock"
+    ! [ -f "$lockfile" ] || flock -w 0.01 "$lockfile" true && {
+        export WAYLAND_DISPLAY="wayland-$i"
+        set_display_success=true
+        break
+    }
+done
+${set_display_success:-false} || echo "warning: failed to set WAYLAND_DISPLAY properly; Wayland apps probably won't work"
 
 #? generate variables holding the absolute path to each repo's executable
 pushd repos >/dev/null
