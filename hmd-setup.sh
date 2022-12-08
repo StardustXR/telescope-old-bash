@@ -2,9 +2,8 @@
 #? safer bash options
 set -euo pipefail
 
->/dev/null command -v doas && alias su_cmd=doas \
-|| >/dev/null command -v sudo && alias su_cmd=sudo \
-|| >/dev/null alias su_cmd='su -c'
+>/dev/null command -v doas && su_cmd=doas \
+|| >/dev/null command -v sudo && su_cmd=sudo
 
 [ -d repos/ ] || ./setup.sh
 
@@ -60,7 +59,7 @@ case $selected in
 
             command -v pacman >/dev/null && {
                 echo 'pacman found, automatically installing dependencies...'
-                sudo pacman -S --needed ${dependencies[@]}
+                $su_cmd pacman -S --needed ${dependencies[@]}
                 echo --------------------------------
                 echo
             } || {
