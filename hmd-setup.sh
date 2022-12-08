@@ -168,6 +168,12 @@ case $selected in
             echo --------------------------------
         }
         ;;
+        
+    monado)
+        echo 'Guided setup for PCVR headsets via Monado is not implemented yet.'
+        echo 'Please install Monado manually for now!'
+        echo
+        echo 'https://gitlab.freedesktop.org/monado/monado'
 esac
 echo
 
