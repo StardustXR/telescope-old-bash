@@ -34,6 +34,31 @@ case $selected in
         [ "$response" == n ] || [ "$response" == N ] && {
             echo 'Make sure to set it up manually before using Stardust!'
         } || {
+            dependencies=(cmake ninja gcc pkgconf vulkan-icd-loader ffmpeg
+                          eigen avahi nlohmann-json sed glslang python
+                          vulkan-headers libxrandr adb)
+
+            command -v pacman >/dev/null && {
+                echo 'pacman found, automatically installing dependencies...'
+                $su_cmd pacman -S --needed ${dependencies[@]}
+                echo --------------------------------
+                echo
+            } || {
+                echo 'pacman not found, please install the following dependencies manually:'
+                echo ${dependencies[@]}
+                echo
+                read -p '(press enter to continue) '
+                echo
+            }
+
+            echo 'If your Quest does not have developer mode enabled, follow this guide:'
+            echo 'https://vr-expert.com/kb/how-to-activate-developer-mode-on-your-meta-quest-headset/'
+            echo
+
+            echo 'Please plug in your developer-enabled Quest!'
+            adb wait-for-device
+            echo
+
             wivrn_url='https://github.com/Meumeu/WiVRn'
             # tag="$(git describe --tags `git rev-list --tags --max-count=1`)"
             tag=v0.3
@@ -53,23 +78,6 @@ case $selected in
                 echo
             }
 
-            dependencies=(cmake ninja gcc pkgconf vulkan-icd-loader ffmpeg
-                          eigen avahi nlohmann-json sed glslang python
-                          vulkan-headers libxrandr adb)
-
-            command -v pacman >/dev/null && {
-                echo 'pacman found, automatically installing dependencies...'
-                $su_cmd pacman -S --needed ${dependencies[@]}
-                echo --------------------------------
-                echo
-            } || {
-                echo 'pacman not found, please install the following dependencies manually:'
-                echo ${dependencies[@]}
-                echo
-                read -p '(press enter to continue) '
-                echo
-            }
-            
             echo 'Enabling avahi daemon...'   
             $su_cmd systemctl enable --now avahi-daemon.service
             echo --------------------------------
@@ -97,14 +105,6 @@ case $selected in
             rm -f "$client_file"
             wget -q "$wivrn_url/$client_path" -O "$client_file"
             echo --------------------------------
-            echo
-
-            echo 'If your Quest does not have developer mode enabled, follow this guide:'
-            echo 'https://vr-expert.com/kb/how-to-activate-developer-mode-on-your-meta-quest-headset/'
-            echo
-
-            echo 'Please plug in your developer-enabled Quest!'
-            adb wait-for-device
             echo
 
             echo 'Installing client...'
