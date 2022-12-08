@@ -69,6 +69,11 @@ case $selected in
                 read -p '(press enter to continue) '
                 echo
             }
+            
+            echo 'Enabling avahi daemon...'   
+            $su_cmd systemctl enable --now avahi-daemon.service
+            echo --------------------------------
+            echo
 
             pushd WiVRn/ >/dev/null
             echo 'Starting build...'
