@@ -116,13 +116,13 @@ case $selected in
                 $su_cmd echo "SUBSYSTEM=='usb', ATTR{idVendor}=='2833', ATTR{idProduct}=='0183', MODE='0666', GROUP='plugdev'" >> /etc/udev/rules.d/99-android.rules
                 $su_cmd udevadm control --reload-rules
                 $su_cmd service udev restart
-                echo "Unplug and replug Quest 2"
+                echo "Please unplug and replug your Quest!"
                 read -p '(press enter once device has been replugged)'
                 echo
             }
             [ "$(adb devices)" == *unauthorized* ] && {
-                echo "Put on your quest and accept the popup to give authorization to install the WiVRn Client"
-                read -p '(press enter once popup is accepted)'
+                echo "Put on your Quest and authorize this machine to install the WiVRn client!"
+                read -p '(press enter when done)'
                 
             }
                         
