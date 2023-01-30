@@ -110,8 +110,8 @@ case $selected in
             [ "$(adb devices)" == *no\ permissions* ] && {
                             
                 echo "Configuring adb"
-                [ -f "/etc/udev/rules.d/99-android.rules" ] && {
-                    touch "/etc/udev/rules.d/99-android.rules"
+                [ -f "/etc/udev/rules.d/99-android.rules" ] || {
+                    $su_cmd touch "/etc/udev/rules.d/99-android.rules"
                 }
                 $su_cmd echo "SUBSYSTEM=='usb', ATTR{idVendor}=='2833', ATTR{idProduct}=='0183', MODE='0666', GROUP='plugdev'" >> /etc/udev/rules.d/99-android.rules
                 $su_cmd udevadm control --reload-rules
