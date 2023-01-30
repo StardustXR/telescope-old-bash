@@ -106,6 +106,30 @@ case $selected in
             wget -q "$wivrn_url/$client_path" -O "$client_file"
             echo --------------------------------
             echo
+            
+            [ "$(adb devices)" == *no\ permissions* ] && {
+                            
+                echo "Configuring adb"
+                [ -f "/etc/udev/rules.d/99-android.rules" ] || {
+                    $su_cmd touch "/etc/udev/rules.d/99-android.rules"
+                }
+                $su_cmd echo "SUBSYSTEM=='usb', ATTR{idVendor}=='2833', ATTR{idProduct}=='0183', MODE='0666', GROUP='plugdev'" >> /etc/udev/rules.d/99-android.rules
+                $su_cmd udevadm control --reload-rules
+                $su_cmd service udev restart
+                echo "Please unplug and replug your Quest!"
+                read -p '(press enter once device has been replugged)'
+                echo
+            }
+            [ "$(adb devices)" == *unauthorized* ] && {
+                echo "Put on your Quest and authorize this machine to install the WiVRn client!"
+                read -p '(press enter when done)'
+                
+            }
+                        
+            [ "$(adb devices)" == *no\ permissions* ] || [ "$(adb devices)" == *unauthorized* ] && {
+                echo "Configuration failed. Rerun the script or check out https://linux-tips.com/t/adb-device-unauthorized-problem/254 to configure manually."
+                echo
+            }
 
             echo 'Installing client...'
             adb install -r "$client_file"
