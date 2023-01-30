@@ -52,4 +52,3 @@ popd >/dev/null
 
 #? print exit message and ensure all child processes are terminated when exiting
 trap "echo -e '\rExiting Stardust XR'; trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
-
