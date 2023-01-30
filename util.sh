@@ -20,7 +20,7 @@ function run() {
 
 #? set WAYLAND_DISPLAY to ensure Wayland clients launch in Stardust
 for i in {0..32}; do
-    lockfile="$XDG_RUNTIME_DIR/wayland-$i.lock"
+    lockfile="${XDG_RUNTIME_DIR:-/run/user/$UID}/wayland-$i.lock"
     ! [ -f "$lockfile" ] || flock -w 0.01 "$lockfile" true && {
         export WAYLAND_DISPLAY="wayland-$i"
         set_display_success=true
