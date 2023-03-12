@@ -7,12 +7,15 @@ mkdir -p repos
 repos=(
     server
     atmosphere
+    comet
     flatland
     gravity
-    manifold
-    protostar
     magnetar
+    manifold
     molecules
+    orbit
+    poltergeist
+    protostar
 )
 
 repo_url="https://github.com/StardustXR"

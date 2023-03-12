@@ -10,7 +10,7 @@ function clean() {
 }
 
 pushd repos/ >/dev/null
-for repo in *; do
+for repo in ${@:-*}; do
     clean $repo &
 done
 wait
