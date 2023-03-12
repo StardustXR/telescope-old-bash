@@ -37,7 +37,7 @@ ${set_display_success:-false} || echo "warning: failed to set WAYLAND_DISPLAY pr
 
 #? generate variables holding the absolute path to each repo's executable
 pushd repos >/dev/null
-for repo in *; do
+for repo in $(ls -1); do
     echo "[util.sh] setup - $repo" >> /tmp/telescope.log
     echo "[util.sh]       - target_dir=$PWD/$repo/target/release/" >> /tmp/telescope.log
     target_dir="$PWD/$repo/target/release/"
