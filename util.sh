@@ -61,8 +61,38 @@ for repo in $(ls -1); do
     eval "${repo}_exe=$target_dir/$target_exe"
     
     echo >> /tmp/telescope.log
-done
-popd >/dev/null
+#? known working terminals
+names=(alacritty kitty)
 
+#? find which of those terminals are installed
+terminals=()
+for name in ${names[@]}; do
+    >/dev/null command -v "$name" && terminals+=("$name")
+done
+
+[ -z "$terminals" ] && {
+    echo 'no known working terminals found!'
+    exit 1
+}
+
+#? only one known working terminal is found
+[ "${#terminals[@]}" == 1 ] && {
+    chosen_term=${terminals[0]}
+ 
+#? multiple choices are available
+} || {
+    #? list known working terminals
+    echo 'found terminal programs:'    
+    i=0
+    for term in ${terminals[@]}; do
+        ((i=i+1))
+    
+        echo "$i: $term" 
+    done
+
+    #? prompt the user to choose a terminal to use from the list
+    read -p 'choose a terminal (number): ' chosen_num
+    chosen_term=${terminals[$((chosen_num - 1))]}
+}
 #? print exit message and ensure all child processes are terminated when exiting
 trap "echo -e '\rExiting Stardust XR'; trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
