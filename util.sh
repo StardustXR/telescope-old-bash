@@ -1,7 +1,7 @@
 [ -d repos/ ] || ./setup.sh
 [ -f .hmd-setup ] || ./hmd-setup.sh
 [ -f /tmp/telescope.log ] && rm /tmp/telescope.log
-[ -d logs/ ] && rm logs/*
+[ -d logs/ ] && rm -f logs/*
 
 #? strip ANSI escape sequences from stdin
 function strip-ansi() {
