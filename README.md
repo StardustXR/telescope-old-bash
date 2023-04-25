@@ -15,8 +15,9 @@ Currently, there's a somewhat rough mostly-automatic setup guide for Meta Quest 
 You can clone the server along with all of the current first-party clients by running the `setup.sh` server included in this repo.
 The source code for each repository will be downloaded to the `repos/` folder, and the demos will automatically compile them when needed.
 
-## xr-terminal.sh
+## demos/flatland-manifold.sh
 This is a simple setup for running a terminal in XR. Not all terminals will work right out the gate, but `kitty` and `alacritty` are currently known to.
+`$ ./demos/flatland-manifold.sh`
 
 ## Clients
 -- WIP --
