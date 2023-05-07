@@ -25,7 +25,7 @@ function build() {
     log "building:" $@
     for repo in $@; do
         echo "building: $repo"
-        log "built: $repo"
+        log "building: $repo"
         pushd "repos/$repo" >/dev/null
         2>&1 >/dev/null cargo -q build --release
         popd >/dev/null
