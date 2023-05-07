@@ -64,7 +64,7 @@ case $selected in
             tag=v0.3
             client_file='WiVRn-oculus-release.apk'
             client_path="releases/download/$tag/$client_file"
-   
+
             [ -d WiVRn/ ] || {
                 echo "Cloning $wivrn_url..."
                 git clone -q "$wivrn_url" WiVRn/
@@ -78,7 +78,7 @@ case $selected in
                 echo
             }
 
-            echo 'Enabling avahi daemon...'   
+            echo 'Enabling avahi daemon...'
             $su_cmd systemctl enable --now avahi-daemon.service
             echo --------------------------------
             echo
@@ -106,9 +106,9 @@ case $selected in
             wget -q "$wivrn_url/$client_path" -O "$client_file"
             echo --------------------------------
             echo
-            
+
             [ "$(adb devices)" == *no\ permissions* ] && {
-                            
+
                 echo "Configuring adb"
                 [ -f "/etc/udev/rules.d/99-android.rules" ] || {
                     $su_cmd touch "/etc/udev/rules.d/99-android.rules"
@@ -123,9 +123,9 @@ case $selected in
             [ "$(adb devices)" == *unauthorized* ] && {
                 echo "Put on your Quest and authorize this machine to install the WiVRn client!"
                 read -p '(press enter when done)'
-                
+
             }
-                        
+
             [ "$(adb devices)" == *no\ permissions* ] || [ "$(adb devices)" == *unauthorized* ] && {
                 echo "Configuration failed. Rerun the script or check out https://linux-tips.com/t/adb-device-unauthorized-problem/254 to configure manually."
                 echo
@@ -139,17 +139,17 @@ case $selected in
             echo 'Starting test'
             echo
             popd >/dev/null
-   
+
             pushd repos/server/ >/dev/null
             echo 'Building Stardust XR server...'
             cargo build
             echo --------------------------------
             echo
             popd >/dev/null
-            
+
             echo 'The server will run for 10 seconds to check that nothing crashes.'
             echo
-            
+
             echo 'Please put on your headset!'
             echo
             read -p '(press enter to continue) '
@@ -186,13 +186,13 @@ case $selected in
             }
             killall -wq wivrn-server ||:
             killall -wq stardust-xr-server ||:
-            
+
             [ "${fail:-}" == true ] && exit 1
-            
+
             echo --------------------------------
         }
         ;;
-        
+
     monado)
         echo 'Guided setup for PCVR headsets via Monado is not implemented yet.'
         echo 'Please install Monado manually for now!'

@@ -12,7 +12,7 @@ function strip-ansi() {
 function log() {
     local fn="${FUNCNAME[1]} -"
     [ "$fn" = 'source -' ] && fn='-'
-    
+
     [ "$1" = '' ] && {
         echo >> /tmp/telescope.log
     } || {
@@ -57,18 +57,18 @@ function wl_display() {
 }
 
 #? generate variables holding the absolute paths to each repo's executable and log locations
-function gen_repo_vars() {   
+function gen_repo_vars() {
     pushd repos >/dev/null
     for repo in $(ls -1); do
         target_dir="$PWD/$repo/target/release/"
         log "$repo"
- 
+
         [ -d "$target_dir" ] || {
             pushd ../ >/dev/null
             build "$repo"
             popd >/dev/null
         }
-    
+
         pushd "$target_dir" >/dev/null
         for file in *; do
             [ -f "$file" ] && [ -x "$file" ] && {
@@ -81,7 +81,7 @@ function gen_repo_vars() {
         log "  ${repo}_log=$PWD/logs/$target_exe.log"
         eval "${repo}_exe=$target_dir/$target_exe"
         eval "${repo}_log=$PWD/../logs/$target_exe.log"
-    
+
         log ''
     done
     popd >/dev/null
@@ -104,16 +104,16 @@ done
 #? only one known working terminal is found
 [ "${#terminals[@]}" == 1 ] && {
     chosen_term=${terminals[0]}
- 
+
 #? multiple choices are available
 } || {
     #? list known working terminals
-    echo 'found terminal programs:'    
+    echo 'found terminal programs:'
     i=0
     for term in ${terminals[@]}; do
         ((i=i+1))
-    
-        echo "$i: $term" 
+
+        echo "$i: $term"
     done
 
     #? prompt the user to choose a terminal to use from the list

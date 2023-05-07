@@ -36,7 +36,7 @@ for repo in ${repos[@]}; do
     #? repo is already available
     [ -e $repo ] && {
         echo "found: $repo"
-        
+
         #? fancy prompt shenanigans
         echo
         echo -e '\e[2A'
@@ -51,9 +51,9 @@ for repo in ${repos[@]}; do
         }
 
         #? fancy prompt shenanigans
-        read -p '-> ' -i "$prev_location" -e location 
+        read -p '-> ' -i "$prev_location" -e location
         echo -e '\e[1A\e[0K\n'
-        
+
         #? if user left the prompt blank, add the repo to the list to be cloned
         [ -z "$location" ] && {
             to_clone+=("$repo")
@@ -62,10 +62,10 @@ for repo in ${repos[@]}; do
         } || {
             processed_location="$(echo $location | sed "s|~|$HOME|g")"
             ln -s "$processed_location" "$repo"
-            
+
             prev_location="$location"
         }
-        
+
         #? fancy prompt shenanigans
         echo -e '\e[3A'
     }
