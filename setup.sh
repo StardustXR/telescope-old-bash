@@ -1,6 +1,7 @@
 #!/bin/bash
 #? safer bash options
 set -euo pipefail
+export IFS=$'\n'
 
 #? list of Stardust XR repos to download/link
 mkdir -p repos

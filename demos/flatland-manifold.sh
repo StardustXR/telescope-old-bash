@@ -1,6 +1,7 @@
 #!/bin/bash
 #? safer bash options
 set -euo pipefail
+export IFS=$'\n'
 
 #? source utilities script
 source util.sh

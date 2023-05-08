@@ -1,6 +1,7 @@
 #!/bin/bash
 #? safer bash options
 set -euo pipefail
+export IFS=$'\n'
 
 function clean() {
     pushd "$1" >/dev/null

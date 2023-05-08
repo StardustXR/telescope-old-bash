@@ -1,6 +1,7 @@
 #!/bin/bash
 #? safer bash options
 set -euo pipefail
+export IFS=$'\n'
 
 >/dev/null command -v doas && su_cmd=doas \
 || >/dev/null command -v sudo && su_cmd=sudo
