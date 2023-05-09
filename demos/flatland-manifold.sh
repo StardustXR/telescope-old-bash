@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# shellcheck disable=SC2154
+#? disabled because the *_exe and *_log variables are generated procedurally
+#  in util.sh
+
 #? safer bash options
 set -euo pipefail
 export IFS=$'\n'
@@ -10,12 +15,14 @@ source util.sh
 build server atmosphere flatland gravity manifold
 
 #? run server and clients
-$server_exe |& strip-ansi >$server_log &
+"$(repo-exe server)" |& strip-ansi >"$(repo-log server)" &
 sleep 0.2
 
-$atmosphere_exe                            &>$atmosphere_log &
-$flatland_exe                              &>$flatland_log &
-$gravity_exe -- 0 -0.5 -0.25 $manifold_exe &>$gravity_log &
+"$(repo-exe atmosphere)"                                     &>"$(repo-log atmosphere)" &
+"$(repo-exe flatland)"                                       &>"$(repo-log flatland)" &
+"$(repo-exe gravity)" -- 0 -0.5 -0.25 "$(repo-exe manifold)" &>"$(repo-log gravity)" &
 sleep 0.1
 
-$chosen_term -e bash -c 'echo Click inside the black window back on your desktop to send keyboard and mouse input to this terminal!; echo; $SHELL' &>logs/terminal.log
+# shellcheck disable=SC2016
+#? disabled because $SHELL is intended to be treated literally
+"$(terminal)" -e bash -c 'echo Click inside the black window back on your desktop to send keyboard and mouse input to this terminal!; echo; $SHELL' &>logs/terminal.log

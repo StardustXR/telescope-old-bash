@@ -11,8 +11,8 @@ function clean() {
 }
 
 pushd repos/ >/dev/null
-for repo in ${@:-*}; do
-    clean $repo &
+for repo in "${@:-*}"; do
+    clean "$repo" &
 done
 wait
 popd >/dev/null

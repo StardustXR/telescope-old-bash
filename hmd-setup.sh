@@ -13,7 +13,7 @@ echo '1: Meta Quest 1/2'
 echo '2: PCVR headset'
 echo '0: No headset'
 
-read -p '-> ' response
+read -rp '-> ' response
 echo
 
 setup_types=(flatscreen wivrn monado)
@@ -23,34 +23,34 @@ case $selected in
     flatscreen)
         echo 'Stardust XR can be used without a headset, in flatscreen mode.'
         echo 'This is only really useful for development or testing purposes, but it works well enough to try things out!'
-        read -p '(press enter to continue) '
+        read -rp '(press enter to continue) '
         ;;
 
     wivrn)
         echo 'Quest support relies on the WiVRn project.'
         echo 'Would you like a guided installation? (Only Arch Linux is currently fully supported)'
-        read -p '(Y/n) -> ' response
+        read -rp '(Y/n) -> ' response
         echo
 
-        [ "$response" == n ] || [ "$response" == N ] && {
+        if [ "$response" == n ] || [ "$response" == N ]; then
             echo 'Make sure to set it up manually before using Stardust!'
-        } || {
+        else
             dependencies=(cmake ninja gcc pkgconf vulkan-icd-loader ffmpeg
                           eigen avahi nlohmann-json sed glslang python
                           vulkan-headers libxrandr adb)
 
-            command -v pacman >/dev/null && {
+            if command -v pacman >/dev/null; then
                 echo 'pacman found, automatically installing dependencies...'
-                $su_cmd pacman -S --needed ${dependencies[@]}
+                $su_cmd pacman -S --needed "${dependencies[@]}"
                 echo --------------------------------
                 echo
-            } || {
+            else
                 echo 'pacman not found, please install the following dependencies manually:'
-                echo ${dependencies[@]}
+                echo "${dependencies[@]}"
                 echo
-                read -p '(press enter to continue) '
+                read -rp '(press enter to continue) '
                 echo
-            }
+            fi
 
             echo 'If your Quest does not have developer mode enabled, follow this guide:'
             echo 'https://vr-expert.com/kb/how-to-activate-developer-mode-on-your-meta-quest-headset/'
@@ -91,13 +91,13 @@ case $selected in
             echo --------------------------------
             echo
 
-            read -p 'Set WiVRn as the default OpenXR runtime? This is required for Stardust XR. (Y/n): ' response
+            read -rp 'Set WiVRn as the default OpenXR runtime? This is required for Stardust XR. (Y/n): ' response
             echo
 
             [ "$response" != n ] && [ "$response" != N ] && {
                 echo 'setting as default'
                 mkdir -p ~/.config/openxr/1/
-                ln --symbolic --force $PWD/build-server/openxr_wivrn-dev.json ~/.config/openxr/1/active_runtime.json
+                ln --symbolic --force "$PWD/build-server/openxr_wivrn-dev.json" ~/.config/openxr/1/active_runtime.json
                 echo --------------------------------
                 echo
             }
@@ -108,7 +108,7 @@ case $selected in
             echo --------------------------------
             echo
 
-            [ "$(adb devices)" == *no\ permissions* ] && {
+            [ "$(adb devices)" == '*no permissions*' ] && {
 
                 echo "Configuring adb"
                 [ -f "/etc/udev/rules.d/99-android.rules" ] || {
@@ -118,16 +118,16 @@ case $selected in
                 $su_cmd udevadm control --reload-rules
                 $su_cmd service udev restart
                 echo "Please unplug and replug your Quest!"
-                read -p '(press enter once device has been replugged)'
+                read -rp '(press enter once device has been replugged)'
                 echo
             }
-            [ "$(adb devices)" == *unauthorized* ] && {
+            [ "$(adb devices)" == '*unauthorized*' ] && {
                 echo "Put on your Quest and authorize this machine to install the WiVRn client!"
-                read -p '(press enter when done)'
+                read -rp '(press enter when done)'
 
             }
 
-            [ "$(adb devices)" == *no\ permissions* ] || [ "$(adb devices)" == *unauthorized* ] && {
+            [ "$(adb devices)" == '*no permissions*' ] || [ "$(adb devices)" == '*unauthorized*' ] && {
                 echo "Configuration failed. Rerun the script or check out https://linux-tips.com/t/adb-device-unauthorized-problem/254 to configure manually."
                 echo
             }
@@ -153,7 +153,7 @@ case $selected in
 
             echo 'Please put on your headset!'
             echo
-            read -p '(press enter to continue) '
+            read -rp '(press enter to continue) '
             echo
 
             echo 'Killing old processes...'
@@ -178,20 +178,20 @@ case $selected in
             sleep 10
             echo
 
-            grep -q WiVRn /tmp/telescope-stardust.log \
-            && echo 'No crashes detected, ending test...' \
-            || {
+            if grep -q WiVRn /tmp/telescope-stardust.log; then
+                echo 'No crashes detected, ending test...'
+            else
                 echo 'Stardust failed to connect to WiVRn!'
                 echo 'Logs are available in /tmp/telescope-*.log'
                 fail=true
-            }
+            fi
             killall -wq wivrn-server ||:
             killall -wq stardust-xr-server ||:
 
             [ "${fail:-}" == true ] && exit 1
 
             echo --------------------------------
-        }
+        fi
         ;;
 
     monado)

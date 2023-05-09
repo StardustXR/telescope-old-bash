@@ -33,9 +33,9 @@ pushd repos/ >/dev/null
 to_clone=()
 prev_location=""
 first_prompt=true
-for repo in ${repos[@]}; do
+for repo in "${repos[@]}"; do
     #? repo is already available
-    [ -e $repo ] && {
+    if [ -e "$repo" ]; then
         echo "found: $repo"
 
         #? fancy prompt shenanigans
@@ -43,7 +43,7 @@ for repo in ${repos[@]}; do
         echo -e '\e[2A'
 
     #? repo isn't already available
-    } || {
+    else
         echo "not found: $repo"
 
         $first_prompt && {
@@ -52,31 +52,31 @@ for repo in ${repos[@]}; do
         }
 
         #? fancy prompt shenanigans
-        read -p '-> ' -i "$prev_location" -e location
+        read -rp '-> ' -i "$prev_location" -e location
         echo -e '\e[1A\e[0K\n'
 
         #? if user left the prompt blank, add the repo to the list to be cloned
-        [ -z "$location" ] && {
+        if [ -z "$location" ]; then
             to_clone+=("$repo")
 
         #? else, symlink the location they provided to its respective place
-        } || {
-            processed_location="$(echo $location | sed "s|~|$HOME|g")"
+        else
+            processed_location="${location//~/$HOME}"
             ln -s "$processed_location" "$repo"
 
             prev_location="$location"
-        }
+        fi
 
         #? fancy prompt shenanigans
         echo -e '\e[3A'
-    }
+    fi
 done
 echo
 
 #? fetch each repo to be cloned in parallel
 [ -n "${to_clone:-}" ] && {
     echo "cloning:"
-    for repo in ${to_clone[@]}; do
+    for repo in "${to_clone[@]}"; do
         echo "  - $repo_url/$repo/"
         clone "$repo" &
     done
@@ -86,12 +86,12 @@ echo
 
 #? check for missing repos, this won't happen unless the script has a bug
 missing=()
-for repo in ${repos[@]}; do
-    [ -d $repo ] || missing+=("$repo")
+for repo in "${repos[@]}"; do
+    [ -d "$repo" ] || missing+=("$repo")
 done
 
 [ -n "${missing:-}" ] && {
-    echo "error: missing repos: ${missing[@]}" 2>&1
+    echo "error: missing repos: ${missing[*]}" 2>&1
     exit 1
 }
 

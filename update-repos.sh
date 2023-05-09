@@ -12,7 +12,7 @@ function pull() {
 
 pushd repos/ >/dev/null
 for repo in *; do
-    pull $repo &
+    pull "$repo" &
 done
 wait
 popd >/dev/null
