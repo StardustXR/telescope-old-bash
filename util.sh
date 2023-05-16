@@ -108,7 +108,7 @@ function repo-exe() {
 
 #? return the log path for the named repo
 function repo-log() {
-    echo -n "$PWD/logs/$1.log"
+    echo -n "$(readlink -f "$PWD/logs/$1.log")"
 }
 
 #? generate variables holding the absolute paths to each repo's executable and log locations
