@@ -34,9 +34,4 @@ export TELESCOPE_TEST_MODE=true
 
 #? check that the server and all the clients pass their tests
 echo 'running server and client tests...'
-run-tests server atmosphere comet flatland gravity magnetar manifold molecules orbit poltergeist protostar >/dev/null || {
-    read -rp 'ignore? (y/N): ' ignore
-    [ "$ignore" != y ] && [ "$ignore" != Y ] && exit 1
-}
-
-exit 0
+run-tests server atmosphere comet flatland gravity magnetar manifold molecules orbit poltergeist protostar >/dev/null
