@@ -193,7 +193,7 @@ mkdir -p logs
 
 #? unit tests
 # shellcheck disable=SC2015
-#? disabled because the warned-of behavior is intended
+#? disabled because the behavior is intended
 [ "${TELESCOPE_TEST_MODE:-}" = true ] && {
     trap '' SIGINT SIGTERM EXIT
     fails=()
