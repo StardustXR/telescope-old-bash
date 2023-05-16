@@ -215,7 +215,7 @@ mkdir -p logs
     {
         mkdir -p repos/build-test
         pushd repos/build-test >/dev/null || exit $?
-        cargo init >/dev/null 2>&1 ||:
+        cargo init &>/dev/null ||:
         popd >/dev/null || exit $?
 
         build build-test >/dev/null
@@ -228,7 +228,7 @@ mkdir -p logs
     {
         mkdir -p repos/run-test
         pushd repos/run-test >/dev/null || exit $?
-        cargo init >/dev/null 2>&1 ||:
+        cargo init &>/dev/null ||:
         popd >/dev/null || exit $?
 
         run run-test
