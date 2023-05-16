@@ -11,7 +11,8 @@ function clean() {
 }
 
 pushd repos/ >/dev/null
-for repo in "${@:-*}"; do
+[ -z "$*" ] && repos=(*) || repos=("$@")
+for repo in "${repos[@]}"; do
     clean "$repo" &
 done
 wait
