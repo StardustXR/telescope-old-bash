@@ -5,6 +5,12 @@
 [ -f /tmp/telescope.log ] && rm /tmp/telescope.log
 [ -d logs/ ] && rm -f logs/*
 
+#? write to stderr
+function echoerr() {
+    echo "$@" 1>&2
+    return 1
+}
+
 #? strip ANSI escape sequences from stdin
 function strip-ansi() {
     sed 's/\x1b\[[0-9;]*m//g' -u
