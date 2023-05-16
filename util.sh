@@ -200,13 +200,15 @@ mkdir -p logs
 
     #? strip-ansi
     {
-        [ "$(echo -e "\033[1;32mtest text\033[0m" | strip-ansi)" = 'test text' ]
+        [ "$(echo -e "\033[1;32mtest text\033[0m" | strip-ansi)" = 'test text' ] \
+        || echoerr "error: strip-ansi returned '$(echo -e "\033[1;32mtest text\033[0m" | strip-ansi)' instead of 'test text'"
     } || fails+=('strip-ansi')
 
     #? log
     {
         log '[logging test]'
-        grep -q '[logging test]' /tmp/telescope.log
+        grep -q '[logging test]' /tmp/telescope.log \
+        || echoerr 'error: test entry was not found in /tmp/telescope.log'
     } || fails+=('log')
 
     #? build
@@ -216,8 +218,9 @@ mkdir -p logs
         cargo init >/dev/null 2>&1 ||:
         popd >/dev/null || exit $?
 
-        build build-test >/dev/null 2>&1
-        [ -e repos/build-test/target/release/build-test ]
+        build build-test >/dev/null
+        [ -e repos/build-test/target/release/build-test ] \
+        || echoerr 'error: unable to locate built executable'
     } || fails+=('build')
     rm -rf repos/build-test/
 
@@ -230,7 +233,8 @@ mkdir -p logs
 
         run run-test
         wait
-        [ -e repos/run-test/target/release/run-test ]
+        [ -e repos/run-test/target/release/run-test ] \
+        || echoerr 'error: unable to locate built executable'
     } || fails+=('run')
     rm -rf repos/run-test/
 
@@ -239,13 +243,36 @@ mkdir -p logs
 
     #? repo-exe
     {
-        [ "$(repo-exe server)" = "$PWD/repos/server/target/release/stardust-xr-server" ]
+        mkdir -p repos/repo-exe-test
+        pushd repos/repo-exe-test >/dev/null || exit $?
+        cargo init >/dev/null 2>&1 ||:
+        cargo build -q --release >/dev/null
+        popd >/dev/null || exit $?
+
+        returned="$(repo-exe repo-exe-test)"
+        expected="$(readlink -f "$PWD/repos/repo-exe-test/target/release/repo-exe-test")"
+
+        [ "$returned" = "$expected" ] \
+        || echoerr -e "error:\n  returned '$returned'\n  expected '$expected'"
     } || fails+=('repo-exe')
+    rm -rf repos/repo-exe-test/
+
 
     #? repo-log
     {
-        [ "$(repo-log server)" = "$PWD/logs/server.log" ]
+        mkdir -p repos/repo-log-test
+        pushd repos/repo-log-test >/dev/null || exit $?
+        cargo init >/dev/null 2>&1 ||:
+        cargo build -q --release >/dev/null
+        popd >/dev/null || exit $?
+
+        returned="$(repo-log repo-log-test)"
+        expected="$(readlink -f "$PWD/logs/repo-log-test.log")"
+
+        [ "$returned" = "$expected" ] \
+        || echoerr -e "error:\n  returned '$returned'\n  expected '$expected'"
     } || fails+=('repo-log')
+    rm -rf repos/repo-log-test/
 
     [ -n "${fails[*]}" ] && {
         echo
